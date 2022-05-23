@@ -8,14 +8,19 @@ dino.style.background = `url(src/img/sheep.png)`;
 dino.style.backgroundSize = `50px 40px`;
 score.innerHTML = '0';
 let getScore = false;
+let block = true;
 
 playDiv.addEventListener('click', play);
 
 function play() {
     playDiv.style.display = 'none';
-    document.addEventListener('keydown', function (e) {
-        if (e.key === ' ') { jump(); }
-    });
+
+    block = false;
+    if (!block) {
+        document.addEventListener('keydown', function (e) {
+            if (e.key === ' ') { jump(); }
+        });
+    }
 
     runAnim();
     getScore = true;
@@ -59,7 +64,7 @@ function runAnim() {
         iterations: Infinity,
         easing: 'linear'
     });
-    
+
 }
 
 function stop() {
@@ -70,7 +75,10 @@ function stop() {
     cactus.getAnimations().forEach(animation => animation.cancel());
     getScore = false;
     console.log(totalscore);
-    
+
+    block = false;
+
+
 }
 
 let isAlive = setInterval(function () {

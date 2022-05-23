@@ -41,13 +41,13 @@
 }
 
 @keyframes jump {
-      0% { top: 150px; }
-     30% { top: 115px; }
-     40% { top:  90px; }
-     50% { top:  80px; }
-     60% { top:  90px; }
-     80% { top: 115px; }
-    100% { top: 150px; }
+      0% { top: 150px; background: url(../img/sheep.png) }
+     30% { top: 115px; background: url(../img/sheep.png) }
+     40% { top:  90px; background: url(../img/sheep.png) }
+     50% { top:  80px; background: url(../img/sheep.png) }
+     60% { top:  90px; background: url(../img/sheep.png) }
+     80% { top: 115px; background: url(../img/sheep.png) }
+    100% { top: 150px; background: url(../img/sheep.png) }
 }
 
 #cactus {
