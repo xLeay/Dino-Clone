@@ -16,11 +16,10 @@ function play() {
     playDiv.style.display = 'none';
 
     block = false;
-    if (!block) {
-        document.addEventListener('keydown', function (e) {
-            if (e.key === ' ') { jump(); }
-        });
-    }
+    document.addEventListener('keydown', function (e) {
+        if (e.key === ' ') { jump(); console.log(block); }
+    });
+
 
     runAnim();
     getScore = true;
@@ -28,14 +27,16 @@ function play() {
 }
 
 function jump() {
-    if (dino.classList != 'jump') {
-        dino.classList.add('jump');
-        dino.classList.remove('run');
+    if (!block) {
+        if (dino.classList != 'jump') {
+            dino.classList.add('jump');
+            dino.classList.remove('run');
 
-        setTimeout(function () {
-            dino.classList.remove('jump');
-            dino.classList.add('run');
-        }, 520);
+            setTimeout(function () {
+                dino.classList.remove('jump');
+                dino.classList.add('run');
+            }, 520);
+        }
     }
 }
 
@@ -69,14 +70,14 @@ function runAnim() {
 
 function stop() {
     playDiv.innerHTML = 'Rejouer ?';
-    playDiv.style.display = 'block';
+    playDiv.style.display = 'flex';
 
     dino.getAnimations().forEach(animation => animation.cancel());
     cactus.getAnimations().forEach(animation => animation.cancel());
     getScore = false;
     console.log(totalscore);
 
-    block = false;
+    block = true;
 
 
 }

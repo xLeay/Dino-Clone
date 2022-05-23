@@ -1,5 +1,5 @@
 <?php
-
+$landscape = ['ciel0', 'ciel1', 'ciel2', 'ciel3', 'cielmsm'];
 ?>
 
 <!DOCTYPE html>
@@ -15,6 +15,13 @@
 
 <body>
     <div class="dinogame">
+        <div class="landscape">
+            <?php foreach ($landscape as $key => $value) : ?>
+                <div class="dinogame__landscape--item">
+                    <img src="src/img/<?= $value ?>.png" alt="landscape">
+                </div>
+            <?php endforeach; ?>
+        </div>
         <h1 class="aubert">Vas-y Aubert !</h1>
         <div class="game">
             <div id="score"></div>
@@ -24,9 +31,9 @@
                 <p>Lancer ?</p>
             </div>
         </div>
-    </div>
 
-    <script src="./src/scripts/dino.js"></script>
+
+        <script src="./src/scripts/dino.js"></script>
 </body>
 
 </html>
