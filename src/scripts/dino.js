@@ -3,6 +3,7 @@ const dino = document.getElementById('dino');
 const cactus = document.getElementById('cactus');
 const playDiv = document.getElementById('play');
 const score = document.getElementById('score');
+const landScape = document.getElementById('landscape');
 
 dino.style.background = `url(src/img/sheep.png)`;
 dino.style.backgroundSize = `50px 40px`;
@@ -58,22 +59,38 @@ function runAnim() {
 
 
     cactus.animate([
-        { left: '580px' },
-        { left: '-20px' },
+        { left: '105%' },
+        { left: '-5%' },
     ], {
         duration: 1500,
         iterations: Infinity,
         easing: 'linear'
     });
 
+    landScape.animate([
+        { left: '0%' },
+        { left: '-300%' },
+    ], {
+        duration: 10000,
+        iterations: Infinity,
+        easing: 'linear'
+    });
+
+}
+
+function stopAnim() {
+    dino.getAnimations().forEach(animation => animation.cancel());
+    cactus.getAnimations().forEach(animation => animation.cancel());
+    landScape.getAnimations().forEach(animation => animation.cancel());
 }
 
 function stop() {
     playDiv.innerHTML = 'Rejouer ?';
     playDiv.style.display = 'flex';
 
-    dino.getAnimations().forEach(animation => animation.cancel());
-    cactus.getAnimations().forEach(animation => animation.cancel());
+    // dino.getAnimations().forEach(animation => animation.cancel());
+    // cactus.getAnimations().forEach(animation => animation.cancel());
+    stopAnim();
     getScore = false;
     console.log(totalscore);
 

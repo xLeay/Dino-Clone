@@ -1,5 +1,6 @@
 <?php
-$landscape = ['ciel0', 'ciel1', 'ciel2', 'ciel3', 'cielmsm'];
+$landscape = ['ciel1', 'ciel2', 'ciel3'];
+// $landscape = ['ciel1', 'ciel2', 'ciel3', 'cielmsm'];
 ?>
 
 <!DOCTYPE html>
@@ -15,20 +16,24 @@ $landscape = ['ciel0', 'ciel1', 'ciel2', 'ciel3', 'cielmsm'];
 
 <body>
     <div class="dinogame">
-        <div class="landscape">
-            <?php foreach ($landscape as $key => $value) : ?>
-                <div class="dinogame__landscape--item">
-                    <img src="src/img/<?= $value ?>.png" alt="landscape">
-                </div>
-            <?php endforeach; ?>
-        </div>
+
         <h1 class="aubert">Vas-y Aubert !</h1>
-        <div class="game">
-            <div id="score"></div>
-            <div id="dino"></div>
-            <div id="cactus"></div>
-            <div id="play">
-                <p>Lancer ?</p>
+        <div class="game-container">
+            <div class="game">
+                <div id="landscape">
+                    <?php foreach ($landscape as $key => $value) : ?>
+                        <img src="src/img/ciel0.png" alt="landscape">
+                        <img src="src/img/<?= $value ?>.png" alt="landscape">
+                    <?php endforeach; ?>
+                    <img src="src/img/ciel0.png" alt="landscape">
+                    <img src="src/img/ciel1.png" alt="landscape">
+                </div>
+                <div id="score"></div>
+                <div id="dino"></div>
+                <div id="cactus"></div>
+                <div id="play">
+                    <p>Lancer ?</p>
+                </div>
             </div>
         </div>
 
