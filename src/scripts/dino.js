@@ -4,7 +4,7 @@ const cactus = document.getElementById('cactus');
 const playDiv = document.getElementById('play');
 const score = document.getElementById('score');
 const landScape = document.getElementById('landscape');
-const grass = document.getElementById('grass');
+const grass = document.getElementById('landscape_grass');
 
 dino.style.background = `url(src/img/sheep.png)`;
 dino.style.backgroundSize = `50px 40px`;
@@ -12,6 +12,13 @@ dino.style.backgroundSize = `50px 40px`;
 score.innerHTML = '0';
 let getScore = false;
 let block = true;
+let isPlaying = false;
+
+document.addEventListener('keydown', function (e) {
+    if (playDiv.innerHTML == 'Rejouer ?' && !isPlaying) {
+        if (e.key === ' ') { play(); }
+    }
+});
 
 playDiv.addEventListener('click', play);
 
@@ -19,8 +26,10 @@ function play() {
     playDiv.style.display = 'none';
 
     block = false;
+    isPlaying = true;
+
     document.addEventListener('keydown', function (e) {
-        if (e.key === ' ') { jump(); console.log(block); }
+        if (e.key === ' ') { jump(); }
     });
 
 
@@ -64,7 +73,7 @@ function runAnim() {
         { left: '105%' },
         { left: '-5%' },
     ], {
-        duration: 1500,
+        duration: 1_800,
         iterations: Infinity,
         easing: 'linear'
     });
@@ -73,20 +82,19 @@ function runAnim() {
         { left: '0%' },
         { left: '-300%' },
     ], {
-        duration: 10000,
+        duration: 40_000,
         iterations: Infinity,
         easing: 'linear'
     });
 
-    grass.animate([ // JE SUIS LA, LA GRASS JE DOIS LA METTRE EN CLASS ET PAS ID JE PENSE POUR LES BOUGER UN PAR UN
+    grass.animate([
         { left: '0%' },
-        { left: '-100%' },
+        { left: '-250%' },
     ], {
-        duration: 10000,
+        duration: 7_000,
         iterations: Infinity,
         easing: 'linear'
     });
-
 }
 
 function stopAnim() {
@@ -99,16 +107,13 @@ function stopAnim() {
 function stop() {
     playDiv.innerHTML = 'Rejouer ?';
     playDiv.style.display = 'flex';
-
-    // dino.getAnimations().forEach(animation => animation.cancel());
-    // cactus.getAnimations().forEach(animation => animation.cancel());
     stopAnim();
+
     getScore = false;
-    console.log(totalscore);
-
+    isPlaying = false;
     block = true;
-
-
+    
+    // console.log(totalscore);
 }
 
 let isAlive = setInterval(function () {
