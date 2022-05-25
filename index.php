@@ -1,6 +1,7 @@
 <?php
 $landscape = ['ciel1', 'ciel2', 'ciel3'];
 // $landscape = ['ciel1', 'ciel2', 'ciel3', 'cielmsm'];
+$offset = 0;
 ?>
 
 <!DOCTYPE html>
@@ -22,11 +23,13 @@ $landscape = ['ciel1', 'ciel2', 'ciel3'];
             <div class="game">
                 <div id="landscape">
                     <?php foreach ($landscape as $key => $value) : ?>
-                        <img src="src/img/ciel0.png" alt="landscape">
-                        <img src="src/img/<?= $value ?>.png" alt="landscape">
+                        <img src="src/img/ciel0.png" alt="sky">
+                        <img src="src/img/<?= $value ?>.png" alt="sky">
+                        <img src="src/img/landscape.png" id="grass" alt="landscape" style="left: calc(100% * <?= $offset ?>); width: 100%">
+                        <?php $offset += 1 ?>
                     <?php endforeach; ?>
-                    <img src="src/img/ciel0.png" alt="landscape">
-                    <img src="src/img/ciel1.png" alt="landscape">
+                    <img src="src/img/ciel0.png" alt="sky">
+                    <img src="src/img/ciel1.png" alt="sky">
                 </div>
                 <div id="score"></div>
                 <div id="dino"></div>

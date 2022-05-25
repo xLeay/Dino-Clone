@@ -4,9 +4,11 @@ const cactus = document.getElementById('cactus');
 const playDiv = document.getElementById('play');
 const score = document.getElementById('score');
 const landScape = document.getElementById('landscape');
+const grass = document.getElementById('grass');
 
 dino.style.background = `url(src/img/sheep.png)`;
 dino.style.backgroundSize = `50px 40px`;
+// grass.style.width = `100%`;
 score.innerHTML = '0';
 let getScore = false;
 let block = true;
@@ -76,12 +78,22 @@ function runAnim() {
         easing: 'linear'
     });
 
+    grass.animate([ // JE SUIS LA, LA GRASS JE DOIS LA METTRE EN CLASS ET PAS ID JE PENSE POUR LES BOUGER UN PAR UN
+        { left: '0%' },
+        { left: '-100%' },
+    ], {
+        duration: 10000,
+        iterations: Infinity,
+        easing: 'linear'
+    });
+
 }
 
 function stopAnim() {
     dino.getAnimations().forEach(animation => animation.cancel());
     cactus.getAnimations().forEach(animation => animation.cancel());
     landScape.getAnimations().forEach(animation => animation.cancel());
+    grass.getAnimations().forEach(animation => animation.cancel());
 }
 
 function stop() {
