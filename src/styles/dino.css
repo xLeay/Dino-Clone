@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 * {
     margin: 0;
@@ -18,13 +19,14 @@
 }
 
 .game {
-    /* border: 1px solid #000; */
+    /* border: 1px solid rgb(29, 214, 5); */
 
     width: 800px;
     height: 300px;
     position: relative;
-    overflow: hidden;
-    display: grid;
+    display: flex;
+
+    /* overflow: hidden; */
 }
 
 .aubert {
@@ -40,24 +42,45 @@
 }
 
 .jump {
-    animation: jump 0.5s linear;
+    animation: jump .6s linear;
+    /* animation: jump 3s linear; */
 }
 
 @keyframes jump {
-      0% { top: 150px; background: url(../img/sheep.png) }
-     30% { top: 115px; background: url(../img/sheep.png) }
-     40% { top:  90px; background: url(../img/sheep.png) }
-     50% { top:  80px; background: url(../img/sheep.png) }
-     60% { top:  90px; background: url(../img/sheep.png) }
-     80% { top: 115px; background: url(../img/sheep.png) }
-    100% { top: 150px; background: url(../img/sheep.png) }
+    0% {
+        bottom: 50px;
+    }
+
+    20% {
+        bottom: 90px;
+    }
+
+    40% {
+        bottom: 120px;
+    }
+
+    50% {
+        bottom: 130px;
+    }
+
+    60% {
+        bottom: 120px;
+    }
+
+    80% {
+        bottom: 90px;
+    }
+
+    100% {
+        bottom: 50px;
+    }
 }
 
 #cactus {
-    width: 20px;
+    width: 40px;
     height: 40px;
     background: url(../img/fence.png);
-    background-size: 20px 40px;
+    background-size: 40px 40px;
     position: absolute;
     bottom: 50px;
     left: 105%;
@@ -65,19 +88,43 @@
 }
 
 #play {
+    user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100px;
-    height: 30px;
-    background: #000;
+    gap: 10px;
+    width: 150px;
+    height: 40px;
+
+    background: #f66a12;
+    box-shadow: 0 .2em #963f0a;
+    border-radius: 5px;
     color: #fff;
+
     text-align: center;
     cursor: pointer;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+#play:hover {
+    background: #cc570e;
+    box-shadow: 0 .2em #963f0a;
+    border-radius: 5px;
+    color: #fff;
+}
+
+#play:active {
+    box-shadow: none;
+    transform: translate(-50%, calc(-50% + .2em));
+}
+
+#play p {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    text-transform: uppercase;
 }
 
 #score {
@@ -87,8 +134,8 @@
     width: fit-content;
     height: 30px;
 
-    border: 1px solid #000;
-    border-radius: 10px;
+    border: 2px solid #000;
+    border-radius: 1px;
 
     position: absolute;
     right: 0px;
@@ -96,10 +143,13 @@
     padding: 10px;
 
     color: #f66a12;
-    font-size: 20px;
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+    font-size: 15px;
     text-align: center;
-    font-weight: bold;
+    font-weight: normal;
 }
+
 
 #landscape {
     /* border: 10px solid rgb(54, 67, 164); */
@@ -114,7 +164,7 @@
 
 .grass {
     border: 1px solid #000;
-    
+
     position: absolute;
     width: 100%;
     height: 100%;
@@ -132,4 +182,22 @@
     left: 0;
     height: 300px;
     width: fit-content;
+}
+
+#landscape_sky {
+    display: flex;
+    width: 100%;
+}
+
+#landscape_sky img {
+    border: 2px solid rgb(220, 61, 61);
+}
+
+canvas {
+    border: 1px solid #000;
+
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
