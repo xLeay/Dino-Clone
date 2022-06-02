@@ -22,7 +22,7 @@ $landscape = ['ciel1', 'ciel2', 'ciel3'];
             <div class="game">
                 <canvas id="canvas" width="800" height="300"></canvas>
                 <div id="score"></div>
-                <div id="dino"></div>
+                <!-- <div id="dino"></div> -->
                 <div id="play">
                     <span class="material-symbols-outlined" id="play_icon">play_circle</span>
                     <p id="play_p">Lancer ?</p>
