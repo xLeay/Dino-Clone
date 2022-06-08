@@ -1,19 +1,35 @@
 
 window.addEventListener('DOMContentLoaded', function () {
-    // const dino = document.getElementById('dino');
     const playDiv = document.getElementById('play');
     const playDiv_p = document.getElementById('play_p');
     const playDiv_icon = document.getElementById('play_icon');
     const score = document.getElementById('score');
-    const landScape = document.getElementById('landscape');
-    const grass = document.getElementById('landscape_grass');
+    const shareDiv = document.getElementById('share');
+    const copyInp = document.getElementById('copyInp');
 
-    const canvas = document.querySelector('canvas');
+    const canvas = document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
+
+
+    const canvasSheep = document.getElementById('canvasSheep');
+    let ctxSheep = canvasSheep.getContext('2d');
+    ctxSheep.imageSmoothingEnabled = false;
+
+    const canvasSheepWidth = canvasSheep.width;
+    const canvasSheepHeight = canvasSheep.height;
+
+
+    const canvasFence = document.getElementById('canvasFence');
+    let ctxFence = canvasFence.getContext('2d');
+    ctxFence.imageSmoothingEnabled = false;
+
+    const canvasFenceWidth = canvasFence.width;
+    const canvasFenceHeight = canvasFence.height;
+
 
     const ciel0 = new Image();
     ciel0.src = '/src/img/ciel0.png';
@@ -39,16 +55,14 @@ window.addEventListener('DOMContentLoaded', function () {
     const sheep2 = new Image();
     sheep2.src = '/src/img/sheep2.png';
 
-
-    // dino.style.background = `url(src/img/sheep.png)`;
-    // dino.style.backgroundSize = `50px 40px`;
     score.innerHTML = '0';
     let getScore = false;
     let block = true;
     let isPlaying = false;
-    let runAnimations = false;
     let sheep_1 = true;
     let sheep_2 = false;
+    let requestAnimation = true;
+    let letDraw = false;
 
     document.addEventListener('keydown', function (e) {
         if (playDiv.innerHTML == 'Rejouer ?' && !isPlaying) {
@@ -56,27 +70,21 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    function check(e) {
-        // alert(e.keyCode);
-        // console.log(e.keyCode, e.key);
-    }
-
     playDiv.addEventListener('click', play);
 
-    function play() {
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PLAY
+    async function play() {
         playDiv.style.display = 'none';
+        shareDiv.style.display = 'none';
+
+        await new Promise(resolve => setTimeout(resolve, 100)); // léger délai avant de lancer le jeu afin de rendre le lancement plus naturel.
 
         block = false;
         isPlaying = true;
-        if (ctx == null) ctx = canvas.getContext('2d');
+        letDraw = true;
 
-        runAnimations = true;
-
-        // document.addEventListener('keydown', function (e) {
-        //     if (e.key === 32) { jump(); }
-        // });
         document.addEventListener('keydown', function (e) {
-            if (e.key === ' ') { check(e); jump(); }
+            if (e.key === ' ') { jump(); }
         });
 
         animSheep();
@@ -92,9 +100,14 @@ window.addEventListener('DOMContentLoaded', function () {
             score.innerHTML = parseInt(score.innerHTML) + 1;
             totalscore = parseInt(score.innerHTML);
         }
-    }, 100);
+    }, 200);
 
     let gameSpeed = 1;
+    let increaseSpeed = setInterval(function () {
+        if (totalscore % 150 == 0 && totalscore != 0) { gameSpeed = (gameSpeed * 10 + 0.1 * 10) / 10; }
+        else if (totalscore % 300 == 0 && totalscore != 0) { gameSpeed = (gameSpeed * 10 + 0.1 * 10) / 10; clearInterval(increaseSpeed); }
+    }, 100);
+
     let cw = canvasWidth;
     let cw2 = canvasWidth / 2;
     let x = 0;
@@ -103,6 +116,8 @@ window.addEventListener('DOMContentLoaded', function () {
     let jumpHeight = 1;
     let jumpMax = 80;
     let jumping = false;
+    let gravity = 0.9;
+    let rdmFence = Math.floor(Math.random() * (0 - cw2) + cw2);
 
     class Sky {
         constructor(img, speedModifier, pos) {
@@ -114,8 +129,8 @@ window.addEventListener('DOMContentLoaded', function () {
             this.img = img;
             this.speedModifier = speedModifier;
             this.speed = gameSpeed * this.speedModifier;
-
             this.yPos = yPos;
+            this.rdmFence = rdmFence;
         }
 
         update() {
@@ -132,15 +147,37 @@ window.addEventListener('DOMContentLoaded', function () {
             this.x2 = Math.floor(this.x2 - this.speed);
         }
 
+        updateSheep() {
+            ctxSheep.clearRect(0, 0, canvasSheepWidth, canvasSheepHeight);
+        }
+
+        updateFence() {
+            this.speed = gameSpeed * this.speedModifier;
+            if (this.x < -this.width - rdmFence) {
+                this.x = cw + this.x2 - this.speed;
+            }
+
+            if (this.x2 < -cw) {
+                this.x2 = cw + this.x - this.speed;
+            }
+
+            this.x = Math.floor(this.x - this.speed);
+            this.x2 = Math.floor(this.x2 - this.speed);
+        }
+
         renderJumpUp() {
             if (this.yPos <= jumpMax && jumping) {
-                this.yPos += jumpHeight;
+
+                this.yPos += jumpHeight * gravity;
+                this.updateSheep();
             }
         }
 
         renderJumpDown() {
             if (this.yPos >= 0 && !jumping) {
+
                 this.yPos -= jumpHeight;
+                this.updateSheep();
             }
 
             if (this.yPos <= 0) {
@@ -152,43 +189,43 @@ window.addEventListener('DOMContentLoaded', function () {
             ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         }
 
-        drawfence() {
-            ctx.drawImage(this.img, this.x, (canvasHeight - 90), 40, 40);
+        drawfence(random) {
+            ctxFence.drawImage(this.img, this.x + rdmFence, (canvasFenceHeight - 90), 40, 40);
         }
 
         drawsheep() {
-            ctx.drawImage(this.img, 0, ((canvasHeight - 90) - this.yPos), 50, 40);
+            ctxSheep.drawImage(this.img, 10, ((canvasHeight - 90) - this.yPos), 50, 40);
         }
     }
 
 
-    const sky0_pos = 0;
-    const sky1_pos = cw2;
-    const sky01_pos = cw2 * 2;
-    const sky2_pos = cw2 * 3;
-    const sky02_pos = cw2 * 4;
-    const sky3_pos = cw2 * 5;
-    const landscape_gras1_pos = 0;
-    const landscape_gras2_pos = cw2;
-    const landscape_gras3_pos = cw2 * 2;
-    const landscape_gras4_pos = cw2 * 3;
-    const fence_pos = cw;
+    let sky0_pos = 0;
+    let sky1_pos = cw2;
+    let sky01_pos = cw2 * 2;
+    let sky2_pos = cw2 * 3;
+    let sky02_pos = cw2 * 4;
+    let sky3_pos = cw2 * 5;
+    let landscape_gras1_pos = 0;
+    let landscape_gras2_pos = cw2;
+    let landscape_gras3_pos = cw2 * 2;
+    let landscape_gras4_pos = cw2 * 3;
+    let fence_pos = cw;
 
 
-    const sky0 = new Sky(ciel0, 0.5, sky0_pos);
-    const sky1 = new Sky(ciel1, 0.5, sky1_pos);
-    const sky01 = new Sky(ciel0, 0.5, sky01_pos);
-    const sky2 = new Sky(ciel2, 0.5, sky2_pos);
-    const sky02 = new Sky(ciel0, 0.5, sky02_pos);
-    const sky3 = new Sky(ciel3, 0.5, sky3_pos);
-    const landscape_gras1 = new Sky(landscape_grass, 2, landscape_gras1_pos);
-    const landscape_gras2 = new Sky(landscape_grass, 2, landscape_gras2_pos);
-    const landscape_gras3 = new Sky(landscape_grass, 2, landscape_gras3_pos);
-    const landscape_gras4 = new Sky(landscape_grass, 2, landscape_gras4_pos);
-    const fence_ = new Sky(fence, 2, fence_pos);
-    const sheep_ = new Sky(sheep, 1, 50);
-    const sheep1_ = new Sky(sheep1, 1, 0);
-    const sheep2_ = new Sky(sheep2, 1, 0);
+    let sky0 = new Sky(ciel0, 0.5, sky0_pos);
+    let sky1 = new Sky(ciel1, 0.5, sky1_pos);
+    let sky01 = new Sky(ciel0, 0.5, sky01_pos);
+    let sky2 = new Sky(ciel2, 0.5, sky2_pos);
+    let sky02 = new Sky(ciel0, 0.5, sky02_pos);
+    let sky3 = new Sky(ciel3, 0.5, sky3_pos);
+    let landscape_gras1 = new Sky(landscape_grass, 2, landscape_gras1_pos);
+    let landscape_gras2 = new Sky(landscape_grass, 2, landscape_gras2_pos);
+    let landscape_gras3 = new Sky(landscape_grass, 2, landscape_gras3_pos);
+    let landscape_gras4 = new Sky(landscape_grass, 2, landscape_gras4_pos);
+    let fence_ = new Sky(fence, 2, fence_pos);
+    let sheep_ = new Sky(sheep, 1, 50);
+    let sheep1_ = new Sky(sheep1, 1, 0);
+    let sheep2_ = new Sky(sheep2, 1, 0);
 
     function anim(img) {
         img.update();
@@ -196,58 +233,61 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 
     function animSky() {
-        if (!runAnimations) { ctx.clearRect(0, 0, canvasWidth, canvasHeight); ctx = null; return; }
 
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        if (letDraw) {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            ctxSheep.clearRect(0, 0, canvasSheepWidth, canvasSheepHeight);
+            ctxFence.clearRect(0, 0, canvasFenceWidth, canvasFenceHeight);
 
-        anim(sky0);
-        anim(sky1);
-        anim(sky01);
-        anim(sky2);
-        anim(sky02);
-        anim(sky3);
+            anim(sky0);
+            anim(sky1);
+            anim(sky01);
+            anim(sky2);
+            anim(sky02);
+            anim(sky3);
 
-        anim(landscape_gras1);
-        anim(landscape_gras2);
-        anim(landscape_gras3);
-        anim(landscape_gras4);
+            anim(landscape_gras1);
+            anim(landscape_gras2);
+            anim(landscape_gras3);
+            anim(landscape_gras4);
 
-        fence_.update();
-        fence_.drawfence();
 
-        animSheep();
+            fence_.updateFence();
+            fence_.drawfence(rdmFence);
 
-        requestAnimationFrame(animSky);
+            requestAnimationFrame(animSky);
+
+            if (requestAnimation) {
+                requestAnimationFrame(animSheep);
+            } else {
+                requestAnimationFrame(animJump);
+            }
+        }
     };
 
     function animSheep() {
-
-        
-        setInterval(function () {
-            sheep_1 ? sheep_1 = false : sheep_1 = true;
-            sheep_2 ? sheep_2 = false : sheep_2 = true;
-        }, 1000);
-
         if (sheep_1) {
-            ctx.clearRect(0, ((canvasHeight - 90) - this.yPos), 50, 40);
-            // sheep1_.update();
             sheep1_.drawsheep();
+            setTimeout(function () { sheep_1 = false; sheep_2 = true; sheep1_.updateSheep(); }, 200);
         }
 
         if (sheep_2) {
-            ctx.clearRect(0, ((canvasHeight - 90) - this.yPos), 50, 40);
-            // sheep2_.update();
             sheep2_.drawsheep();
+            setTimeout(function () { sheep_2 = false; sheep_1 = true; sheep2_.updateSheep(); }, 200);
         }
     }
 
-    // animSheep();
+    function animJump() {
+        sheep_.update();
+        sheep_.drawsheep();
+    }
 
     function jump() {
         if (!block) {
 
             block = true;
             jumping = true;
+            requestAnimation = false;
 
             let jumpIn = setInterval(function () {
 
@@ -260,47 +300,83 @@ window.addEventListener('DOMContentLoaded', function () {
                             clearInterval(jumpOut);
                         }
                         sheep_.renderJumpDown();
-                    }, 5);
+                    }, 3);
                 }
 
                 sheep_.renderJumpUp();
             }, 2);
+
+            setTimeout(function () { sheep_.updateSheep(); requestAnimation = true; }, 700);
         }
     }
 
+    let copyFinalScore;
 
     let isAlive = setInterval(function () {
 
-        // if (fence_.x < 50 && fence_.x > 0 && sheep_.yPos <= 40) {
+        // if (fence_.x < 60 && fence_.x > 10 && sheep_.yPos <= 40) {
         //     // console.log(totalscore);
-        //     stop();
-        //     // return;
+        //     copyFinalScore = "J'ai réalisé un score de " + totalscore + " avec Aubert ! \n\nVenez me concurrencer sur https://montsaintmichel.christopherbeaurain.com/aubert";
+        //     copyInp.value = copyFinalScore;
+        //     // stop();
+        //     return;
         // }
+        let sheepX = 10;
+        let sheepX2 = 10 + 50;
+        let sheepY = ((canvasHeight - 90) - yPos);
+        let sheepY2 = ((canvasHeight - 90) - yPos) + 40;
+
+        let fenceX = fence_pos + rdmFence;
+        let fenceX2 = fenceX + 40;
+        let fenceY = canvasFenceHeight - 90;
+        let fenceY2 = canvasFenceHeight - 50;
+
+        let overlapX = (sheepX <= fenceX2 && sheepX >= fenceX) || (sheepX2 <= fenceX2 && sheepX2 >= fenceX);
+        let overlapY = (sheepY <= fenceY2 && sheepY >= fenceY) || (sheepY2 <= fenceY2 && sheepY2 >= fenceY);
+
+        let isColliding = overlapX && overlapY;
+        if (isColliding) {
+            console.log("collision");
+        } // TODO : COLLISION
+
+
     }, 50);
 
+    shareDiv.onclick = function () { copyInp.select(); document.execCommand('copy'); console.log('vous avez copié ' + copyInp.value); }
 
     function stop() {
         playDiv_p.innerHTML = 'Rejouer ?';
         playDiv_icon.innerHTML = 'replay';
         playDiv.style.display = 'flex';
-
-        stopAnim();
+        playDiv.style.top = '55%';
+        shareDiv.style.display = 'flex';
+        shareDiv.style.top = '35%';
 
         getScore = false;
         isPlaying = false;
         block = true;
-        runAnimations = false;
+        letDraw = false;
 
-        init();
+        resetPos();
+        return;
     }
 
-    function stopAnim() {
-        // dino.getAnimations().forEach(animation => animation.cancel());
-        init();
+    function resetPos() {
+        sky0.x = 0;
+        sky1.x = cw2;
+        sky01.x = cw2 * 2;
+        sky2.x = cw2 * 3;
+        sky02.x = cw2 * 4;
+        sky3.x = cw2 * 5;
+        landscape_gras1.x = 0;
+        landscape_gras2.x = cw2;
+        landscape_gras3.x = cw2 * 2;
+        landscape_gras4.x = cw2 * 3;
+        fence_.x = cw;
+        sheep_.x = 50;
+        sheep1_.x = 0;
+        sheep2_.x = 0;
     }
-
-    init();
-
 
     function init() {
         sky0.draw();
@@ -314,5 +390,8 @@ window.addEventListener('DOMContentLoaded', function () {
         landscape_gras2.draw();
         landscape_gras3.draw();
         landscape_gras4.draw();
+
+        sheep_.drawsheep();
     }
+    init();
 });

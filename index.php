@@ -20,16 +20,26 @@ $landscape = ['ciel1', 'ciel2', 'ciel3'];
         <h1 class="aubert">Vas-y Aubert !</h1>
         <div class="game-container">
             <div class="game">
-                <canvas id="canvas" width="800" height="300"></canvas>
+                <canvas id="canvasFence" width="800" height="300"></canvas>
+                <canvas id="canvasSheep" width="800" height="300"></canvas>
+                <canvas id="canvas"      width="800" height="300"></canvas>
                 <div id="score"></div>
-                <!-- <div id="dino"></div> -->
                 <div id="play">
                     <span class="material-symbols-outlined" id="play_icon">play_circle</span>
                     <p id="play_p">Lancer ?</p>
                 </div>
+                <div id="share">
+                    <span class="material-symbols-outlined" id="share_icon">share</span>
+                    <p id="share_p">Partager</p>
+                </div>
+                <div id="highscore">
+                    <p class="highscore_p"></p>
+                </div>
             </div>
         </div>
     </div>
+    <input id="copyInp" type="text" />
+
 
     <script src="./src/scripts/dino.js"></script>
 </body>
