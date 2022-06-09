@@ -16,9 +16,11 @@ $landscape = ['ciel1', 'ciel2', 'ciel3'];
 </head>
 
 <body>
+    <input id="copyInp" type="text" />
     <div class="dinogame">
         <h1 class="aubert">Vas-y Aubert !</h1>
         <div class="game-container">
+
             <div class="game">
                 <canvas id="canvasFence" width="800" height="300"></canvas>
                 <canvas id="canvasSheep" width="800" height="300"></canvas>
@@ -36,10 +38,9 @@ $landscape = ['ciel1', 'ciel2', 'ciel3'];
                     <p class="highscore_p"></p>
                 </div>
             </div>
+
         </div>
     </div>
-    <input id="copyInp" type="text" />
-
 
     <script src="./src/scripts/dino.js"></script>
 </body>

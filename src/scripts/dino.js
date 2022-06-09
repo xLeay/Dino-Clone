@@ -55,6 +55,13 @@ window.addEventListener('DOMContentLoaded', function () {
     const sheep2 = new Image();
     sheep2.src = '/src/img/sheep2.png';
 
+    const jumpSound = new Audio('/src/sounds/jump.mp3');
+    jumpSound.volume = 0.7;
+
+    const hitSound = new Audio('/src/sounds/hit.mp3');
+    hitSound.volume = 0.5;
+
+
     score.innerHTML = '0';
     let getScore = false;
     let block = true;
@@ -82,6 +89,8 @@ window.addEventListener('DOMContentLoaded', function () {
         block = false;
         isPlaying = true;
         letDraw = true;
+        rdmFence = Math.floor(Math.random() * (0 - cw2) + cw2);
+        newGame();
 
         document.addEventListener('keydown', function (e) {
             if (e.key === ' ') { jump(); }
@@ -114,11 +123,41 @@ window.addEventListener('DOMContentLoaded', function () {
     let x2 = cw2
     let yPos = 0;
     let jumpHeight = 1;
-    let jumpMax = 80;
+    let jumpMax = 90;
     let jumping = false;
     let gravity = 0.9;
-    let rdmFence = Math.floor(Math.random() * (0 - cw2) + cw2);
+    let rdmFence;
 
+    let sky0_pos;
+    let sky1_pos;
+    let sky01_pos;
+    let sky2_pos;
+    let sky02_pos;
+    let sky3_pos;
+    let skymsm_pos;
+    let landscape_gras1_pos;
+    let landscape_gras2_pos;
+    let landscape_gras3_pos;
+    let landscape_gras4_pos;
+    let fence_pos;
+
+    let sky0;
+    let sky1;
+    let sky01;
+    let sky2;
+    let sky02;
+    let sky3;
+    let skymsm;
+    let landscape_gras1;
+    let landscape_gras2;
+    let landscape_gras3;
+    let landscape_gras4;
+    let fence_;
+    let sheep_;
+    let sheep1_;
+    let sheep2_;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// ANIMATION SHEEP
     class Sky {
         constructor(img, speedModifier, pos) {
             this.x = pos;
@@ -168,6 +207,7 @@ window.addEventListener('DOMContentLoaded', function () {
         renderJumpUp() {
             if (this.yPos <= jumpMax && jumping) {
 
+                jumpSound.play();
                 this.yPos += jumpHeight * gravity;
                 this.updateSheep();
             }
@@ -196,36 +236,55 @@ window.addEventListener('DOMContentLoaded', function () {
         drawsheep() {
             ctxSheep.drawImage(this.img, 10, ((canvasHeight - 90) - this.yPos), 50, 40);
         }
+
+        isAliveSheep() {
+            let fenceX = fence_.x + rdmFence;
+
+            if (
+                fenceX <= 60
+                && fenceX + 40 >= 10
+                && (canvasFenceHeight - 90) <= ((canvasFenceHeight - 50) - this.yPos)
+                && (canvasFenceHeight - 50) >= ((canvasHeight - 90) - this.yPos)
+            ) {
+
+                hitSound.play();
+                copyFinalScore = "J'ai réalisé un score de " + totalscore + " avec Aubert ! \n\nVenez me concurrencer sur https://montsaintmichel.christopherbeaurain.com/aubert";
+                copyInp.value = copyFinalScore;
+                stop();
+            }
+        }
     }
 
+    function newGame() {
+        sky0_pos = 0;
+        sky1_pos = cw2;
+        sky01_pos = cw2 * 2;
+        sky2_pos = cw2 * 3;
+        sky02_pos = cw2 * 4;
+        sky3_pos = cw2 * 5;
+        skymsm_pos = cw2;
+        landscape_gras1_pos = 0;
+        landscape_gras2_pos = cw2;
+        landscape_gras3_pos = cw2 * 2;
+        landscape_gras4_pos = cw2 * 3;
+        fence_pos = cw;
 
-    let sky0_pos = 0;
-    let sky1_pos = cw2;
-    let sky01_pos = cw2 * 2;
-    let sky2_pos = cw2 * 3;
-    let sky02_pos = cw2 * 4;
-    let sky3_pos = cw2 * 5;
-    let landscape_gras1_pos = 0;
-    let landscape_gras2_pos = cw2;
-    let landscape_gras3_pos = cw2 * 2;
-    let landscape_gras4_pos = cw2 * 3;
-    let fence_pos = cw;
-
-
-    let sky0 = new Sky(ciel0, 0.5, sky0_pos);
-    let sky1 = new Sky(ciel1, 0.5, sky1_pos);
-    let sky01 = new Sky(ciel0, 0.5, sky01_pos);
-    let sky2 = new Sky(ciel2, 0.5, sky2_pos);
-    let sky02 = new Sky(ciel0, 0.5, sky02_pos);
-    let sky3 = new Sky(ciel3, 0.5, sky3_pos);
-    let landscape_gras1 = new Sky(landscape_grass, 2, landscape_gras1_pos);
-    let landscape_gras2 = new Sky(landscape_grass, 2, landscape_gras2_pos);
-    let landscape_gras3 = new Sky(landscape_grass, 2, landscape_gras3_pos);
-    let landscape_gras4 = new Sky(landscape_grass, 2, landscape_gras4_pos);
-    let fence_ = new Sky(fence, 2, fence_pos);
-    let sheep_ = new Sky(sheep, 1, 50);
-    let sheep1_ = new Sky(sheep1, 1, 0);
-    let sheep2_ = new Sky(sheep2, 1, 0);
+        sky0 = new Sky(ciel0, 0.5, sky0_pos);
+        sky1 = new Sky(ciel1, 0.5, sky1_pos);
+        sky01 = new Sky(ciel0, 0.5, sky01_pos);
+        sky2 = new Sky(ciel2, 0.5, sky2_pos);
+        sky02 = new Sky(ciel0, 0.5, sky02_pos);
+        sky3 = new Sky(ciel3, 0.5, sky3_pos);
+        skymsm = new Sky(cielmsm, 0.5, sky2_pos);
+        landscape_gras1 = new Sky(landscape_grass, 2, landscape_gras1_pos);
+        landscape_gras2 = new Sky(landscape_grass, 2, landscape_gras2_pos);
+        landscape_gras3 = new Sky(landscape_grass, 2, landscape_gras3_pos);
+        landscape_gras4 = new Sky(landscape_grass, 2, landscape_gras4_pos);
+        fence_ = new Sky(fence, 2, fence_pos);
+        sheep_ = new Sky(sheep, 1, 50);
+        sheep1_ = new Sky(sheep1, 1, 0);
+        sheep2_ = new Sky(sheep2, 1, 0);
+    }
 
     function anim(img) {
         img.update();
@@ -235,7 +294,7 @@ window.addEventListener('DOMContentLoaded', function () {
     function animSky() {
 
         if (letDraw) {
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            ctx.clearRect     (0, 0, canvasWidth, canvasHeight);
             ctxSheep.clearRect(0, 0, canvasSheepWidth, canvasSheepHeight);
             ctxFence.clearRect(0, 0, canvasFenceWidth, canvasFenceHeight);
 
@@ -245,12 +304,13 @@ window.addEventListener('DOMContentLoaded', function () {
             anim(sky2);
             anim(sky02);
             anim(sky3);
+            
+            if (totalscore > 100 && totalscore < 160) { anim(skymsm); }
 
             anim(landscape_gras1);
             anim(landscape_gras2);
             anim(landscape_gras3);
             anim(landscape_gras4);
-
 
             fence_.updateFence();
             fence_.drawfence(rdmFence);
@@ -285,6 +345,7 @@ window.addEventListener('DOMContentLoaded', function () {
     function jump() {
         if (!block) {
 
+            
             block = true;
             jumping = true;
             requestAnimation = false;
@@ -306,41 +367,16 @@ window.addEventListener('DOMContentLoaded', function () {
                 sheep_.renderJumpUp();
             }, 2);
 
-            setTimeout(function () { sheep_.updateSheep(); requestAnimation = true; }, 700);
+            setTimeout(function () { sheep_.updateSheep(); requestAnimation = true; }, 800);
         }
     }
 
     let copyFinalScore;
-
     let isAlive = setInterval(function () {
-
-        // if (fence_.x < 60 && fence_.x > 10 && sheep_.yPos <= 40) {
-        //     // console.log(totalscore);
-        //     copyFinalScore = "J'ai réalisé un score de " + totalscore + " avec Aubert ! \n\nVenez me concurrencer sur https://montsaintmichel.christopherbeaurain.com/aubert";
-        //     copyInp.value = copyFinalScore;
-        //     // stop();
-        //     return;
-        // }
-        let sheepX = 10;
-        let sheepX2 = 10 + 50;
-        let sheepY = ((canvasHeight - 90) - yPos);
-        let sheepY2 = ((canvasHeight - 90) - yPos) + 40;
-
-        let fenceX = fence_pos + rdmFence;
-        let fenceX2 = fenceX + 40;
-        let fenceY = canvasFenceHeight - 90;
-        let fenceY2 = canvasFenceHeight - 50;
-
-        let overlapX = (sheepX <= fenceX2 && sheepX >= fenceX) || (sheepX2 <= fenceX2 && sheepX2 >= fenceX);
-        let overlapY = (sheepY <= fenceY2 && sheepY >= fenceY) || (sheepY2 <= fenceY2 && sheepY2 >= fenceY);
-
-        let isColliding = overlapX && overlapY;
-        if (isColliding) {
-            console.log("collision");
-        } // TODO : COLLISION
-
-
-    }, 50);
+        if (isPlaying) {
+            sheep_.isAliveSheep();
+        }
+    }, 25);
 
     shareDiv.onclick = function () { copyInp.select(); document.execCommand('copy'); console.log('vous avez copié ' + copyInp.value); }
 
@@ -379,6 +415,7 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 
     function init() {
+        newGame();
         sky0.draw();
         sky1.draw();
         sky01.draw();
